@@ -32,7 +32,7 @@ class Trainer():
         self.model.to(self.device)
 
         self.fold = fold
-        self.exp_name = self.cfg.version_note + '_' + self.cfg.backbone.replace('/', '_')
+        self.exp_name = self.cfg.exp_name
         self.output_folder = os.path.join(self.cfg.model_dir, self.exp_name, f'fold{self.fold}')
         
         # commet logger
@@ -80,7 +80,7 @@ class Trainer():
         self.current_valid_step = 0
         
         self.checkpoint_monitor = self.cfg.checkpoint_monitor
-        self.checkpointer = Checkpointer(self.output_folder, smaller_is_better=False,
+        self.checkpointer = Checkpointer(self.output_folder, smaller_is_better=self.cfg.metric_smaller_better,
                                          save_best_only=self.cfg.save_best_only, logger=self.logger)
 
         # resume training
