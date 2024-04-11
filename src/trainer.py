@@ -87,7 +87,7 @@ class Trainer():
         if self.resume:
             self.start_ep = self.checkpointer.resume(self.model, self.optimizer, self.lr_scheduler)
         else:
-            self.start_ep = 1
+            self.start_ep = 0
 
 
     def fit(self):
@@ -113,8 +113,6 @@ class Trainer():
             self.checkpointer.update(self.model_ema.module if self.ema else self.model,
                                     self.optimizer, self.lr_scheduler, tracked_metric)
             
-            if self.lr_scheduler:
-                self.lr_scheduler.step()
 
     def _train_one_step(self, data):
         if self.accumulation_steps == 1 and self.batch_index == 0:
@@ -180,6 +178,10 @@ class Trainer():
             training_step_outputs.append(output)
 
         tk0.close()
+
+        # update the learning rate
+        if self.lr_scheduler:
+            self.lr_scheduler.step()
 
         # on train epoch end
         monitor = self.model.training_epoch_end(training_step_outputs)
