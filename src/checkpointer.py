@@ -9,7 +9,7 @@ class Checkpointer:
         self.output_folder = output_folder
         self.save_best_only = save_best_only
         self.smaller_is_better = smaller_is_better
-        self.best_epoch = 1
+        self.best_epoch = 0
         self.current_epoch = 0
         self.logger = logger
 
@@ -21,9 +21,6 @@ class Checkpointer:
             self.best_value = 0
 
     def update(self, model, optimizer, scheduler, current_tracked_metric):
-        # update logs
-        self.current_epoch += 1
-
         # save checkpoints
         state_dict = dict()
         state_dict['epoch'] = self.current_epoch
@@ -53,6 +50,9 @@ class Checkpointer:
                 state_dict_path = os.path.join(self.output_folder, f'best.pth')
                 torch.save(state_dict, state_dict_path)
                 self.logger.log_others({'best_epoch': self.best_epoch})
+        
+        # update the epoch
+        self.current_epoch += 1
 
     def resume(self, model, optimizer, scheduler):
         all_ck_paths = glob.glob(os.path.join(self.output_folder, '*.pth'))
