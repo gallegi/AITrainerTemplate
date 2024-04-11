@@ -145,6 +145,10 @@ class Trainer():
             if self.batch_index > 0:
                 self.optimizer.zero_grad()
 
+        # update the learning rate
+        if self.lr_scheduler:
+            self.lr_scheduler.step()
+
         return output
 
     def _val_one_step(self, data):
@@ -178,10 +182,6 @@ class Trainer():
             training_step_outputs.append(output)
 
         tk0.close()
-
-        # update the learning rate
-        if self.lr_scheduler:
-            self.lr_scheduler.step()
 
         # on train epoch end
         monitor = self.model.training_epoch_end(training_step_outputs)
