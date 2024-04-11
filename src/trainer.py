@@ -92,7 +92,7 @@ class Trainer():
 
     def fit(self):
         print('Start training ...')
-        for current_epoch in range(self.start_ep, self.num_epochs+1):
+        for current_epoch in range(self.start_ep, self.num_epochs):
             print(f'===== Epoch {current_epoch} ======')
             with self.logger.train():
                 train_monitor = self._train_one_epoch(self.train_loader, current_epoch)
